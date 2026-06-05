@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "dependencies": {
     "@expo/ui": "~56.0.15",
+    "@react-native-community/datetimepicker": "^9.1.0",
+    "axios": "^1.17.0",
+    "datetimepicker": "^0.1.39",
     "expo": "~56.0.8",
     "expo-constants": "~56.0.16",
     "expo-device": "~56.0.4",
