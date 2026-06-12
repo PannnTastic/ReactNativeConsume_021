@@ -84,6 +84,45 @@ export default function HewanFormScreen() {
     }
   };
 
+  const handleSubmit = async () => {
+    if (!nama.trim()) {
+      setError('Nama hewan harus diisi');
+      return;
+    }
+    if (!jenis.trim()) {
+      setError('Jenis hewan harus diisi');
+      return;
+    }
+    if (!harga.trim() || isNaN(Number(harga))) {
+      setError('Harga harus berupa angka yang valid');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    const payload = {
+      nama: nama.trim(),
+      jenis: jenis.trim(),
+      harga: Number(harga),
+      tanggal_lahir: tanggalLahir.toISOString().split('T')[0],
+      status,
+    };
+
+    try {
+      if (isEdit && id) {
+        await hewanRepo.update(Number(id), payload);
+      } else {
+        await hewanRepo.create(payload);
+      }
+      router.back();
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Gagal menyimpan data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0f172a" />
@@ -233,6 +272,7 @@ export default function HewanFormScreen() {
             loading && styles.submitBtnDisabled,
           ]}
           disabled={loading}
+          onPress={handleSubmit}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
