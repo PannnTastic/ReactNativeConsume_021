@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useRouter } from 'expo-router';
 import {
   StyleSheet,
   Text,
@@ -16,6 +17,7 @@ import { Hewan } from '@/domain/entities/hewan';
 
 export default function HewanListScreen() {
   const { hewanList, loading, error, fetchHewan, deleteHewan } = useHewanViewModel();
+  const router = useRouter();
 
   const confirmDelete = (id: number, nama: string) => {
     Alert.alert(
@@ -72,6 +74,16 @@ export default function HewanListScreen() {
       </View>
 
       <View style={styles.cardActions}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.actionBtn,
+            styles.editBtn,
+            pressed && styles.actionBtnPressed,
+          ]}
+          onPress={() => router.push({ pathname: '/main/form', params: { id: item.id } })}
+        >
+          <Text style={styles.editBtnText}>✏️ Edit</Text>
+        </Pressable>
         <Pressable
           style={({ pressed }) => [
             styles.actionBtn,
@@ -135,6 +147,16 @@ export default function HewanListScreen() {
           }
         />
       )}
+
+      <Pressable
+        style={({ pressed }) => [
+          styles.fab,
+          pressed && styles.fabPressed,
+        ]}
+        onPress={() => router.push('/main/form')}
+      >
+        <Text style={styles.fabText}>+</Text>
+      </Pressable>
     </SafeAreaView>
   );
 }
@@ -292,5 +314,39 @@ const styles = StyleSheet.create({
     color: '#fca5a5',
     fontSize: 13,
     fontWeight: '600',
+  },
+  editBtn: {
+    backgroundColor: '#1e3a5f',
+  },
+  editBtnText: {
+    color: '#93c5fd',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 30,
+    right: 24,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#2563eb',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#2563eb',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  fabPressed: {
+    backgroundColor: '#1d4ed8',
+    transform: [{ scale: 0.95 }],
+  },
+  fabText: {
+    fontSize: 32,
+    color: '#fff',
+    fontWeight: 'bold',
+    lineHeight: 34,
   },
 });
