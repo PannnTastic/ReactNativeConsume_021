@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,6 +14,9 @@ import {
   Alert,
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { HewanRepoImpl } from '@/data/repositories/hewanRepoImpl';
+
+const hewanRepo = new HewanRepoImpl();
 
 export default function HewanFormScreen() {
   const router = useRouter();
@@ -38,6 +41,33 @@ export default function HewanFormScreen() {
       setTanggalLahir(selectedDate);
     }
   };
+
+  useEffect(() => {
+    if (isEdit && id) {
+      const loadHewan = async () => {
+        setLoading(true);
+        try {
+          const res = await hewanRepo.getById(Number(id));
+          if (res.success && res.data) {
+            setNama(res.data.nama);
+            setJenis(res.data.jenis);
+            setHarga(String(res.data.harga));
+            if (res.data.tanggal_lahir) {
+              setTanggalLahir(new Date(res.data.tanggal_lahir));
+            }
+            if (res.data.status) {
+              setStatus(res.data.status);
+            }
+          }
+        } catch (err: any) {
+          setError('Gagal memuat data hewan');
+        } finally {
+          setLoading(false);
+        }
+      };
+      loadHewan();
+    }
+  }, [id]);
 
   const handleBack = () => {
     if (nama || jenis || harga) {
