@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useHewanViewModel } from '@/hooks/useHewanViewModel';
 import { Hewan } from '@/domain/entities/hewan';
+import * as SecureStore from 'expo-secure-store';
 
 export default function HewanListScreen() {
   const { hewanList, loading, error, fetchHewan, deleteHewan } = useHewanViewModel();
@@ -29,6 +30,24 @@ export default function HewanListScreen() {
           text: 'Hapus',
           style: 'destructive',
           onPress: () => deleteHewan(id),
+        },
+      ]
+    );
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Apakah Anda yakin ingin keluar?',
+      [
+        { text: 'Batal', style: 'cancel' },
+        {
+          text: 'Keluar',
+          style: 'destructive',
+          onPress: async () => {
+            await SecureStore.deleteItemAsync('user_token');
+            router.replace('/');
+          },
         },
       ]
     );
@@ -102,13 +121,24 @@ export default function HewanListScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0f172a" />
       <View style={styles.header}>
-        <View style={styles.headerRow}>
-          <Text style={styles.headerTitle}>🐄 Ternak App</Text>
-          {hewanList.length > 0 && (
-            <View style={styles.countBadge}>
-              <Text style={styles.countText}>{hewanList.length}</Text>
-            </View>
-          )}
+        <View style={styles.headerTopRow}>
+          <View style={styles.headerRow}>
+            <Text style={styles.headerTitle}>🐄 Ternak App</Text>
+            {hewanList.length > 0 && (
+              <View style={styles.countBadge}>
+                <Text style={styles.countText}>{hewanList.length}</Text>
+              </View>
+            )}
+          </View>
+          <Pressable
+            style={({ pressed }) => [
+              styles.logoutBtn,
+              pressed && styles.logoutBtnPressed,
+            ]}
+            onPress={handleLogout}
+          >
+            <Text style={styles.logoutBtnText}>Logout</Text>
+          </Pressable>
         </View>
         <Text style={styles.headerSubtitle}>Manajemen Data Hewan</Text>
       </View>
@@ -170,6 +200,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 16,
     paddingBottom: 16,
+  },
+  headerTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   headerRow: {
     flexDirection: 'row',
@@ -348,5 +383,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     lineHeight: 34,
+  },
+  logoutBtn: {
+    backgroundColor: '#7f1d1d',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  logoutBtnPressed: {
+    backgroundColor: '#991b1b',
+  },
+  logoutBtnText: {
+    color: '#fca5a5',
+    fontSize: 13,
+    fontWeight: '600',
   },
 });
