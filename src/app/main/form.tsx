@@ -7,13 +7,21 @@ import {
   SafeAreaView,
   StatusBar,
   ScrollView,
+  TextInput,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
 
 export default function HewanFormScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
   const isEdit = !!id;
+
+  const [nama, setNama] = useState('');
+  const [jenis, setJenis] = useState('');
+  const [harga, setHarga] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -39,7 +47,62 @@ export default function HewanFormScreen() {
         contentContainerStyle={styles.formContent}
         keyboardShouldPersistTaps="handled"
       >
-        <Text style={styles.placeholderText}>Form akan ditambahkan di sini</Text>
+        {error && (
+          <View style={styles.errorBox}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Nama Hewan</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Masukkan nama hewan"
+            placeholderTextColor="#64748b"
+            value={nama}
+            onChangeText={setNama}
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Jenis</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Masukkan jenis hewan"
+            placeholderTextColor="#64748b"
+            value={jenis}
+            onChangeText={setJenis}
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Harga (Rp)</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Masukkan harga"
+            placeholderTextColor="#64748b"
+            value={harga}
+            onChangeText={setHarga}
+            keyboardType="numeric"
+          />
+        </View>
+
+        <Pressable
+          style={({ pressed }) => [
+            styles.submitBtn,
+            pressed && styles.submitBtnPressed,
+            loading && styles.submitBtnDisabled,
+          ]}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.submitBtnText}>
+              {isEdit ? 'Update Data' : 'Simpan Data'}
+            </Text>
+          )}
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
@@ -83,9 +146,49 @@ const styles = StyleSheet.create({
     padding: 24,
     gap: 16,
   },
-  placeholderText: {
-    color: '#64748b',
-    fontSize: 16,
+  errorBox: {
+    backgroundColor: '#7f1d1d',
+    padding: 12,
+    borderRadius: 10,
+  },
+  errorText: {
+    color: '#fca5a5',
+    fontSize: 14,
     textAlign: 'center',
+  },
+  inputGroup: {
+    gap: 6,
+  },
+  label: {
+    color: '#cbd5e1',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  input: {
+    backgroundColor: '#1e293b',
+    borderRadius: 12,
+    padding: 14,
+    fontSize: 16,
+    color: '#f8fafc',
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  submitBtn: {
+    backgroundColor: '#2563eb',
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  submitBtnPressed: {
+    backgroundColor: '#1d4ed8',
+  },
+  submitBtnDisabled: {
+    opacity: 0.7,
+  },
+  submitBtnText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
