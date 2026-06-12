@@ -60,7 +60,14 @@ export default function HewanListScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0f172a" />
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>🐄 Ternak App</Text>
+        <View style={styles.headerRow}>
+          <Text style={styles.headerTitle}>🐄 Ternak App</Text>
+          {hewanList.length > 0 && (
+            <View style={styles.countBadge}>
+              <Text style={styles.countText}>{hewanList.length}</Text>
+            </View>
+          )}
+        </View>
         <Text style={styles.headerSubtitle}>Manajemen Data Hewan</Text>
       </View>
 
@@ -112,10 +119,26 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 16,
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
   headerTitle: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#f8fafc',
+  },
+  countBadge: {
+    backgroundColor: '#3b82f6',
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    borderRadius: 12,
+  },
+  countText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   headerSubtitle: {
     fontSize: 14,
