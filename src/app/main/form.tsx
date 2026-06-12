@@ -10,7 +10,9 @@ import {
   TextInput,
   Pressable,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
 export default function HewanFormScreen() {
   const router = useRouter();
@@ -20,8 +22,19 @@ export default function HewanFormScreen() {
   const [nama, setNama] = useState('');
   const [jenis, setJenis] = useState('');
   const [harga, setHarga] = useState('');
+  const [tanggalLahir, setTanggalLahir] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const onDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+    }
+    if (selectedDate) {
+      setTanggalLahir(selectedDate);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -85,6 +98,31 @@ export default function HewanFormScreen() {
             onChangeText={setHarga}
             keyboardType="numeric"
           />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Tanggal Lahir</Text>
+          <Pressable
+            style={styles.dateButton}
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Text style={styles.dateButtonText}>
+              {tanggalLahir.toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </Text>
+          </Pressable>
+          {showDatePicker && (
+            <DateTimePicker
+              value={tanggalLahir}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={onDateChange}
+              maximumDate={new Date()}
+            />
+          )}
         </View>
 
         <Pressable
@@ -172,6 +210,17 @@ const styles = StyleSheet.create({
     color: '#f8fafc',
     borderWidth: 1,
     borderColor: '#334155',
+  },
+  dateButton: {
+    backgroundColor: '#1e293b',
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#334155',
+  },
+  dateButtonText: {
+    color: '#f8fafc',
+    fontSize: 16,
   },
   submitBtn: {
     backgroundColor: '#2563eb',
