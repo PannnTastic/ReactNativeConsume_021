@@ -11,6 +11,7 @@ import {
   Pressable,
   ActivityIndicator,
   Platform,
+  Alert,
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
@@ -38,6 +39,21 @@ export default function HewanFormScreen() {
     }
   };
 
+  const handleBack = () => {
+    if (nama || jenis || harga) {
+      Alert.alert(
+        'Batal',
+        'Apakah Anda yakin ingin kembali? Data yang belum disimpan akan hilang.',
+        [
+          { text: 'Tetap di sini', style: 'cancel' },
+          { text: 'Kembali', style: 'destructive', onPress: () => router.back() },
+        ]
+      );
+    } else {
+      router.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0f172a" />
@@ -48,7 +64,7 @@ export default function HewanFormScreen() {
             styles.backButton,
             pressed && styles.backButtonPressed,
           ]}
-          onPress={() => router.back()}
+          onPress={handleBack}
         >
           <Text style={styles.backButtonText}>← Kembali</Text>
         </Pressable>
