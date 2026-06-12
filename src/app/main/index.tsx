@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useRouter } from 'expo-router';
+import { useCallback } from 'react';
+import { useRouter, useFocusEffect } from 'expo-router';
 import {
   StyleSheet,
   Text,
@@ -53,9 +53,11 @@ export default function HewanListScreen() {
     );
   };
 
-  useEffect(() => {
-    fetchHewan();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchHewan();
+    }, [])
+  );
 
   const renderItem = ({ item }: { item: Hewan }) => (
     <View style={styles.card}>
