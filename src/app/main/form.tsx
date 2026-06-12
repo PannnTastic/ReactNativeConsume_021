@@ -23,7 +23,9 @@ export default function HewanFormScreen() {
   const [jenis, setJenis] = useState('');
   const [harga, setHarga] = useState('');
   const [tanggalLahir, setTanggalLahir] = useState(new Date());
+  const [status, setStatus] = useState<'tersedia' | 'terjual'>('tersedia');
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -122,6 +124,59 @@ export default function HewanFormScreen() {
               onChange={onDateChange}
               maximumDate={new Date()}
             />
+          )}
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Status</Text>
+          <Pressable
+            style={styles.dropdownButton}
+            onPress={() => setShowStatusDropdown(!showStatusDropdown)}
+          >
+            <Text style={styles.dropdownButtonText}>
+              {status === 'tersedia' ? '✅ Tersedia' : '❌ Terjual'}
+            </Text>
+            <Text style={styles.dropdownArrow}>
+              {showStatusDropdown ? '▲' : '▼'}
+            </Text>
+          </Pressable>
+          {showStatusDropdown && (
+            <View style={styles.dropdownList}>
+              <Pressable
+                style={[
+                  styles.dropdownItem,
+                  status === 'tersedia' && styles.dropdownItemSelected,
+                ]}
+                onPress={() => {
+                  setStatus('tersedia');
+                  setShowStatusDropdown(false);
+                }}
+              >
+                <Text style={[
+                  styles.dropdownItemText,
+                  status === 'tersedia' && styles.dropdownItemTextSelected,
+                ]}>
+                  ✅ Tersedia
+                </Text>
+              </Pressable>
+              <Pressable
+                style={[
+                  styles.dropdownItem,
+                  status === 'terjual' && styles.dropdownItemSelected,
+                ]}
+                onPress={() => {
+                  setStatus('terjual');
+                  setShowStatusDropdown(false);
+                }}
+              >
+                <Text style={[
+                  styles.dropdownItemText,
+                  status === 'terjual' && styles.dropdownItemTextSelected,
+                ]}>
+                  ❌ Terjual
+                </Text>
+              </Pressable>
+            </View>
           )}
         </View>
 
@@ -239,5 +294,47 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  dropdownButton: {
+    backgroundColor: '#1e293b',
+    borderRadius: 12,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#334155',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  dropdownButtonText: {
+    color: '#f8fafc',
+    fontSize: 16,
+  },
+  dropdownArrow: {
+    color: '#94a3b8',
+    fontSize: 12,
+  },
+  dropdownList: {
+    backgroundColor: '#1e293b',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#334155',
+    overflow: 'hidden',
+    marginTop: 4,
+  },
+  dropdownItem: {
+    padding: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#334155',
+  },
+  dropdownItemSelected: {
+    backgroundColor: '#1e3a5f',
+  },
+  dropdownItemText: {
+    color: '#e2e8f0',
+    fontSize: 16,
+  },
+  dropdownItemTextSelected: {
+    color: '#60a5fa',
+    fontWeight: '600',
   },
 });
