@@ -8,12 +8,29 @@ import {
   FlatList,
   ActivityIndicator,
   RefreshControl,
+  Alert,
+  Pressable,
 } from 'react-native';
 import { useHewanViewModel } from '@/hooks/useHewanViewModel';
 import { Hewan } from '@/domain/entities/hewan';
 
 export default function HewanListScreen() {
-  const { hewanList, loading, error, fetchHewan } = useHewanViewModel();
+  const { hewanList, loading, error, fetchHewan, deleteHewan } = useHewanViewModel();
+
+  const confirmDelete = (id: number, nama: string) => {
+    Alert.alert(
+      'Hapus Data',
+      `Apakah Anda yakin ingin menghapus "${nama}"?`,
+      [
+        { text: 'Batal', style: 'cancel' },
+        {
+          text: 'Hapus',
+          style: 'destructive',
+          onPress: () => deleteHewan(id),
+        },
+      ]
+    );
+  };
 
   useEffect(() => {
     fetchHewan();
@@ -52,6 +69,19 @@ export default function HewanListScreen() {
             </Text>
           </View>
         )}
+      </View>
+
+      <View style={styles.cardActions}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.actionBtn,
+            styles.deleteBtn,
+            pressed && styles.actionBtnPressed,
+          ]}
+          onPress={() => confirmDelete(item.id!, item.nama)}
+        >
+          <Text style={styles.deleteBtnText}>🗑 Hapus</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -237,5 +267,30 @@ const styles = StyleSheet.create({
     color: '#e2e8f0',
     fontSize: 14,
     fontWeight: '500',
+  },
+  cardActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#334155',
+    gap: 8,
+  },
+  actionBtn: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  actionBtnPressed: {
+    opacity: 0.7,
+  },
+  deleteBtn: {
+    backgroundColor: '#7f1d1d',
+  },
+  deleteBtnText: {
+    color: '#fca5a5',
+    fontSize: 13,
+    fontWeight: '600',
   },
 });
